@@ -1,11 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Card from './Card'
+
+import axios from 'axios'
+
+const api_key = "DEMO_KEY"
+const URL = `https://api.nasa.gov/planetary/apod?api_key=${api_key}`
+
 
 function App() {
+  const [apod, setApod] = useState();
+  useEffect(() => {
+    function fetchPhoto(){
+      axios.get(URL)
+      .then(res => {
+        console.log(res.data)
+        setApod(res.data)
+      })
+      .catch(err => {err.message})
+
+    }
+    fetchPhoto();
+  }, [])
+  if(!apod) return "Fetching Photo of the Day..."
   return (
-    <p>
-      Read through the instructions in the README.md file to build your NASA
-      app! Have fun <span role="img" aria-label='go!'>🚀</span>!
-    </p>
+    <>
+    <section>
+    <Card 
+      title={apod.title}
+      text={apod.explanation}
+      imageURL={apod.url}
+      date= {apod.date}
+    />
+    </section>
+    </>
   )
 }
 
